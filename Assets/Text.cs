@@ -32,6 +32,8 @@ public class Text : MonoBehaviour
 
     public void StartDialogue()
     {
+        isDialogueActive = true;
+        
         thirdPersonController.enabled = false;
         interact.enabled = false;
 
@@ -42,7 +44,6 @@ public class Text : MonoBehaviour
         dialogue.OnDialogueComplete -= OnDialogueComplete;
         dialogue.OnDialogueComplete += OnDialogueComplete;
 
-        isDialogueActive = true;
     }
 
     private void OnDialogueComplete()
@@ -53,8 +54,12 @@ public class Text : MonoBehaviour
         dialogue.OnDialogueComplete -= OnDialogueComplete;
         DialogueCompleteEvent?.Invoke();
 
-        isDialogueActive = false;
-
         dialogueUi.SetActive(false);
+        isDialogueActive = false;
+    }
+
+    public void DialogueNextLine()
+    {
+        dialogue.NextLine(); 
     }
 }

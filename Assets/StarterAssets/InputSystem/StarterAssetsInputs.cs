@@ -15,6 +15,8 @@ namespace StarterAssets
 
 		private Interact interact;
 
+		private Text text;
+
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -25,6 +27,7 @@ namespace StarterAssets
 		void Start()
 		{
 			interact = gameObject.GetComponent<Interact>();
+			text = gameObject.GetComponent<Text>();
 		}
 
 #if ENABLE_INPUT_SYSTEM
@@ -66,6 +69,14 @@ namespace StarterAssets
 				{
 					interact.interactingObject.Interact();
 				}
+			}
+		}
+
+		public void OnNextDialogue(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				text.DialogueNextLine();
 			}
 		}
 #endif

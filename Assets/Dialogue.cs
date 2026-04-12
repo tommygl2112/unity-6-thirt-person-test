@@ -39,19 +39,7 @@ public class Dialogue : MonoBehaviour
 
     void Update()
     {
-        // if (_input.interact)
-        // {
-        //     if (textComponent.text == lines[index])
-        //     {
-        //         NextLine();
-        //     }
-        //     else
-        //     {
-        //         StopAllCoroutines();
-        //         textComponent.text = lines[index];
-        //         doth.SetActive(true);
-        //     }
-        // }
+
     }
 
     void StartDialogue()
@@ -72,19 +60,28 @@ public class Dialogue : MonoBehaviour
         doth.SetActive(true);
     }
 
-    void NextLine()
+    public void NextLine()
     {
-        doth.SetActive(false);
-        if (index < lines.Length - 1)
+        if (textComponent.text == lines[index])
         {
-            index++;
-            textComponent.text = string.Empty;
-            StartCoroutine(TypeLine());
+            doth.SetActive(false);
+            if (index < lines.Length - 1)
+            {
+                index++;
+                textComponent.text = string.Empty;
+                StartCoroutine(TypeLine());
+            }
+            else
+            {
+                gameObject.SetActive(false);
+                OnDialogueComplete?.Invoke(); // Notificar que el diálogo ha terminado
+            }            
         }
         else
         {
-            gameObject.SetActive(false);
-            OnDialogueComplete?.Invoke(); // Notificar que el diálogo ha terminado
-        }
+            // StopAllCoroutines();
+            textComponent.text = lines[index];
+            doth.SetActive(true);
+        } 
     }
 }
