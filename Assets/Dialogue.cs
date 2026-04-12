@@ -6,7 +6,7 @@ using StarterAssets;
 
 public class Dialogue : MonoBehaviour
 {
-    public TextMeshProUGUI textComponent;
+    private TextMeshProUGUI textComponent;
     public string[] lines;
     public float textSpeed;
 
@@ -14,20 +14,27 @@ public class Dialogue : MonoBehaviour
     public delegate void DialogueComplete();
     public event DialogueComplete OnDialogueComplete;
 
-    public GameObject dialogueDoth;
+    public GameObject text;
+    public GameObject doth;
 
     private StarterAssetsInputs _input;
 
+    void Awake()
+    {
+        _input = FindFirstObjectByType<StarterAssetsInputs>();
+        textComponent = text.GetComponent<TextMeshProUGUI>();
+    }
+
     void OnEnable()
     {
-        dialogueDoth.SetActive(false);
+        doth.SetActive(false);
         textComponent.text = string.Empty;
         StartDialogue();
     }
 
     void Start()
     {
-        _input = FindFirstObjectByType<StarterAssetsInputs>();
+
     }
 
     void Update()
@@ -42,7 +49,7 @@ public class Dialogue : MonoBehaviour
         //     {
         //         StopAllCoroutines();
         //         textComponent.text = lines[index];
-        //         dialogueDoth.SetActive(true);
+        //         doth.SetActive(true);
         //     }
         // }
     }
@@ -62,12 +69,12 @@ public class Dialogue : MonoBehaviour
             yield return new WaitForSeconds(textSpeed);
         }
 
-        dialogueDoth.SetActive(true);
+        doth.SetActive(true);
     }
 
     void NextLine()
     {
-        dialogueDoth.SetActive(false);
+        doth.SetActive(false);
         if (index < lines.Length - 1)
         {
             index++;
