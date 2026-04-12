@@ -6,6 +6,6 @@ public class Item : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        
+        Debug.Log(itemName);
     }
 }

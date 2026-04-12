@@ -1,6 +1,6 @@
 using UnityEngine;
 
-interface IInteractable
+public interface IInteractable
 {
     void Interact();
 }
@@ -10,7 +10,7 @@ public class Interact : MonoBehaviour
     public GameObject aim;
     private Transform interacterSource;
     public float InteractRange;
-    private IInteractable interactingObject;
+    public IInteractable interactingObject;
     public float radius = 0.5f;
     public float rayOffsetX;
 
@@ -26,7 +26,6 @@ public class Interact : MonoBehaviour
         Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
         Ray ray = new Ray(origin, interacterSource.forward);
 
-        // Ray ray = new Ray(aim.transform.position, aim.transform.forward);
         if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, InteractRange))
         {
             if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))

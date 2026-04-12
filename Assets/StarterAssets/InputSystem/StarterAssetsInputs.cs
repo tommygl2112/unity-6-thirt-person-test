@@ -13,6 +13,8 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 
+		private Interact interact;
+
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -20,28 +22,51 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
-#if ENABLE_INPUT_SYSTEM
-		public void OnMove(InputValue value)
+		void Start()
 		{
-			MoveInput(value.Get<Vector2>());
+			interact = gameObject.GetComponent<Interact>();
 		}
 
-		public void OnLook(InputValue value)
+#if ENABLE_INPUT_SYSTEM
+		public void OnMove(InputAction.CallbackContext context)
+		{
+			MoveInput(context.ReadValue<Vector2>());
+		}
+
+		public void OnLook(InputAction.CallbackContext context)
 		{
 			if(cursorInputForLook)
 			{
-				LookInput(value.Get<Vector2>());
+				LookInput(context.ReadValue<Vector2>());
 			}
 		}
 
-		public void OnJump(InputValue value)
+		public void OnJump(InputAction.CallbackContext context)
 		{
-			JumpInput(value.isPressed);
+			JumpInput(context.performed);
 		}
 
-		public void OnSprint(InputValue value)
+		public void OnSprint(InputAction.CallbackContext context)
 		{
-			SprintInput(value.isPressed);
+			if (context.performed)
+			{
+				sprint = true;
+			}
+			else if (context.canceled)
+			{
+				sprint = false;
+			}
+		}
+
+		public void OnInteract(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (interact.interactingObject != null)
+				{
+					interact.interactingObject.Interact();
+				}
+			}
 		}
 #endif
 
