@@ -32,12 +32,6 @@ public class Interact : MonoBehaviour
             if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
             {
                 interactingObject = interactObj;
-
-                Item hitObjectInformation = hitInfo.collider.GetComponent<Item>();
-                if (hitObjectInformation != null)
-                {
-                    Debug.Log(hitObjectInformation);
-                }
             }
             else
             {

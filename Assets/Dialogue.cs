@@ -79,7 +79,7 @@ public class Dialogue : MonoBehaviour
         }
         else
         {
-            // StopAllCoroutines();
+            StopAllCoroutines();
             textComponent.text = lines[index];
             doth.SetActive(true);
         } 

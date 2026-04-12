@@ -9,8 +9,6 @@ public class Item : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        Debug.Log("Interact: " + itemName);
-
         //dialogue
         if (dialogueAction)
         {
@@ -18,10 +16,6 @@ public class Item : MonoBehaviour, IInteractable
             {
                 text.lines = new string[]{itemName};
                 text.StartDialogue();
-            }
-            else
-            {
-                Debug.Log("text.isDialogueActive: " + text.isDialogueActive);
             }
         }
     }
