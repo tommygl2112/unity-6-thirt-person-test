@@ -65,7 +65,7 @@ namespace StarterAssets
 		{
 			if (context.performed)
 			{
-				if (interact.interactingObject != null)
+				if (interact.interactingObject != null && interact.canInteract)
 				{
 					interact.interactingObject.Interact();
 				}
@@ -76,7 +76,10 @@ namespace StarterAssets
 		{
 			if (context.performed)
 			{
-				text.DialogueNextLine();
+				if (text.isDialogueActive)
+				{
+					text.DialogueNextLine();
+				}
 			}
 		}
 #endif

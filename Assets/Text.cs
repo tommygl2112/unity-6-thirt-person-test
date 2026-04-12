@@ -10,6 +10,7 @@ public class Text : MonoBehaviour
     private Dialogue dialogue;
     public event System.Action DialogueCompleteEvent;
     public string[] lines;
+    public string name;
 
     void Awake()
     {
@@ -35,8 +36,9 @@ public class Text : MonoBehaviour
         isDialogueActive = true;
         
         thirdPersonController.enabled = false;
-        interact.enabled = false;
+        interact.canInteract = false;
 
+        // dialogue.name = name;
         dialogue.lines = lines;
 
         dialogueUi.SetActive(true);
@@ -49,7 +51,7 @@ public class Text : MonoBehaviour
     private void OnDialogueComplete()
     {
         thirdPersonController.enabled = true;
-        interact.enabled = true;
+        interact.canInteract = true;
 
         dialogue.OnDialogueComplete -= OnDialogueComplete;
         DialogueCompleteEvent?.Invoke();

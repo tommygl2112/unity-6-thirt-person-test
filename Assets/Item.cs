@@ -5,7 +5,7 @@ public class Item : MonoBehaviour, IInteractable
     public string itemName;
 
     public Text text;
-    public bool dialogueAction;
+    public bool dialogueAction; //configurar en el editor
 
     public void Interact()
     {
@@ -18,6 +18,10 @@ public class Item : MonoBehaviour, IInteractable
             {
                 text.lines = new string[]{itemName};
                 text.StartDialogue();
+            }
+            else
+            {
+                Debug.Log("text.isDialogueActive: " + text.isDialogueActive);
             }
         }
     }

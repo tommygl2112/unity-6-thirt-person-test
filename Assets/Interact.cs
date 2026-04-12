@@ -13,6 +13,7 @@ public class Interact : MonoBehaviour
     public IInteractable interactingObject;
     public float radius = 0.5f;
     public float rayOffsetX;
+    public bool canInteract = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
