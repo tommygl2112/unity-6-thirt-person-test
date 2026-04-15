@@ -6,6 +6,7 @@ public class Item : MonoBehaviour, IInteractable
 
     public Text text;
     public bool dialogueAction; //configurar en el editor
+    public Transform itemInteractUiPosition;
 
     public void Interact()
     {

@@ -14,6 +14,8 @@ public class Interact : MonoBehaviour
     public float radius = 0.5f;
     public float rayOffsetX;
     public bool canInteract = true;
+    public GameObject interactItemUi;
+    public float interactItemUiOffsetY;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,15 +34,25 @@ public class Interact : MonoBehaviour
             if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
             {
                 interactingObject = interactObj;
+
+                Item item = hitInfo.collider.GetComponent<Item>();
+                if (item != null)
+                {
+                    RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
+                    uiRect.position = item.itemInteractUiPosition.position;   
+                    interactItemUi.SetActive(true);
+                }
             }
             else
             {
                 interactingObject = null;
+                interactItemUi.SetActive(false);
             }
         }
         else
         {
             interactingObject = null;
+            interactItemUi.SetActive(false);
         }
     }
 
