@@ -13,9 +13,9 @@ public class Interact : MonoBehaviour
     public IInteractable interactingObject;
     public float radius = 0.5f;
     public float rayOffsetX;
-    public bool canInteract = true;
+    public bool canInteract = true; // Text.cs, StarterAssetsInputs.cs
     public GameObject interactItemUi;
-    public float interactItemUiOffsetY;
+    public GameObject foundedItemUi;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,34 +26,72 @@ public class Interact : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
-        Ray ray = new Ray(origin, interacterSource.forward);
-
-        if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, InteractRange))
+        if (canInteract)
         {
-            if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
-            {
-                interactingObject = interactObj;
+            Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
+            Ray ray = new Ray(origin, interacterSource.forward); // usar items
+            Ray detectionRay = new Ray(origin, interacterSource.forward); // detectar items
 
-                Item item = hitInfo.collider.GetComponent<Item>();
-                if (item != null)
+            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, InteractRange))
+            {
+                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
-                    RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
-                    uiRect.position = item.itemInteractUiPosition.position;   
-                    interactItemUi.SetActive(true);
+                    interactingObject = interactObj; // StarterAssetsInputs.cs
+
+                    Item item = hitInfo.collider.GetComponent<Item>();
+                    if (item != null)
+                    {
+                        RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
+                        uiRect.position = item.itemInteractUiPosition.position;   
+                        foundedItemUi.SetActive(false);
+                        interactItemUi.SetActive(true);
+                    }
+                }
+                else
+                {
+                    ClearInteractInformation();
                 }
             }
             else
             {
-                interactingObject = null;
-                interactItemUi.SetActive(false);
+                ClearInteractInformation();
+
+                // buscar items
+                if (Physics.SphereCast(detectionRay, radius * 2f, out RaycastHit detectionHitInfo, InteractRange * 2f))
+                {
+                    if (detectionHitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                    {
+                        Item item = detectionHitInfo.collider.GetComponent<Item>();
+                        if (item != null)
+                        {
+                            RectTransform uiRect = foundedItemUi.GetComponent<RectTransform>();
+                            uiRect.position = item.itemInteractUiPosition.position; 
+                            foundedItemUi.SetActive(true);
+                        }
+                    }
+                    else
+                    {
+                        foundedItemUi.SetActive(false);
+                    }
+                }
+                else
+                {
+                    foundedItemUi.SetActive(false);
+                }
             }
         }
         else
         {
-            interactingObject = null;
+            foundedItemUi.SetActive(false);
             interactItemUi.SetActive(false);
         }
+
+    }
+
+    private void ClearInteractInformation()
+    {
+        interactingObject = null;
+        interactItemUi.SetActive(false);
     }
 
     //debug
