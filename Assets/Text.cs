@@ -37,7 +37,7 @@ public class Text : MonoBehaviour
         thirdPersonController.enabled = false;
         interact.canInteract = false;
 
-        // dialogue.name = dialogueName;
+        dialogue.dialogueName = dialogueName;
         dialogue.lines = lines;
 
         dialogue.OnDialogueComplete -= OnDialogueComplete;

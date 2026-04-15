@@ -7,14 +7,17 @@ using StarterAssets;
 public class Dialogue : MonoBehaviour
 {
     private TextMeshProUGUI textComponent;
+    public TextMeshProUGUI nameComponent;
     public string[] lines;
+    public string dialogueName;
     public float textSpeed;
 
     public int index;
     public delegate void DialogueComplete();
     public event DialogueComplete OnDialogueComplete;
 
-    public GameObject text;
+    public GameObject nameUi;
+    public GameObject textUi;
     public GameObject doth;
 
     private StarterAssetsInputs _input;
@@ -22,12 +25,15 @@ public class Dialogue : MonoBehaviour
     void Awake()
     {
         _input = FindFirstObjectByType<StarterAssetsInputs>();
-        textComponent = text.GetComponent<TextMeshProUGUI>();
+        nameComponent = nameUi.GetComponent<TextMeshProUGUI>();
+        textComponent = textUi.GetComponent<TextMeshProUGUI>();
     }
 
     void OnEnable()
     {
         doth.SetActive(false);
+
+        nameComponent.text = string.Empty;
         textComponent.text = string.Empty;
         StartDialogue();
     }
@@ -50,6 +56,7 @@ public class Dialogue : MonoBehaviour
 
     IEnumerator TypeLine()
     {
+        nameComponent.text = dialogueName;
         textComponent.text = string.Empty;  // Limpiar el texto antes de empezar a escribirlo
         foreach (char c in lines[index].ToCharArray())
         {

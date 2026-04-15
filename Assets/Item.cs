@@ -14,7 +14,8 @@ public class Item : MonoBehaviour, IInteractable
         {
             if (!text.isDialogueActive)
             {
-                text.lines = new string[]{itemName};
+                text.dialogueName = itemName;
+                text.lines = new string[]{"texto de prueba", "texto de prueba 2"};
                 text.StartDialogue();
             }
         }
