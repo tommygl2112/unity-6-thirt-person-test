@@ -16,6 +16,7 @@ public class Interact : MonoBehaviour
     public bool canInteract = true; // Text.cs, StarterAssetsInputs.cs
     public GameObject interactItemUi;
     public GameObject foundedItemUi;
+    public Item item;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -38,7 +39,7 @@ public class Interact : MonoBehaviour
                 {
                     interactingObject = interactObj; // StarterAssetsInputs.cs
 
-                    Item item = hitInfo.collider.GetComponent<Item>();
+                    item = hitInfo.collider.GetComponent<Item>();
                     if (item != null)
                     {
                         RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
@@ -61,7 +62,7 @@ public class Interact : MonoBehaviour
                 {
                     if (detectionHitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                     {
-                        Item item = detectionHitInfo.collider.GetComponent<Item>();
+                        item = detectionHitInfo.collider.GetComponent<Item>();
                         if (item != null)
                         {
                             RectTransform uiRect = foundedItemUi.GetComponent<RectTransform>();
@@ -92,6 +93,7 @@ public class Interact : MonoBehaviour
     {
         interactingObject = null;
         interactItemUi.SetActive(false);
+        item = null;
     }
 
     //debug

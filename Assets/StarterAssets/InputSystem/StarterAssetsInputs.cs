@@ -82,6 +82,17 @@ namespace StarterAssets
 				}
 			}
 		}
+
+		public void OnExitItemInspection(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf)
+				{
+					interact.item.itemIsnpection.ExitItemInspection();
+				}
+			}
+		}
 #endif
 
 

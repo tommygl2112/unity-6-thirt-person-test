@@ -9,9 +9,11 @@ public class Item : MonoBehaviour, IInteractable
     public Text text;
     public bool inspectItemAction;
     public GameObject inspectItemCamera;
-    public GameObject itemInspected;
+    public GameObject itemInspected; // -> ItemInspection.cs
+    public ItemIsnpection itemIsnpection;
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
+    public bool destroyItem;
 
     void Start()
     {
@@ -33,7 +35,7 @@ public class Item : MonoBehaviour, IInteractable
         }
         else if (inspectItemAction)
         {
-            Debug.Log("inspectItemAction");
+            itemIsnpection = itemInspected.GetComponent<ItemIsnpection>();
 
             // Obtener componentes del objeto inspeccionado
             MeshFilter inspectedFilter = itemInspected.GetComponent<MeshFilter>();
@@ -44,7 +46,11 @@ public class Item : MonoBehaviour, IInteractable
             inspectedRenderer.material = meshRenderer.material;
 
             inspectItemCamera.SetActive(true);
-            Destroy(gameObject);
+            
+            if(destroyItem)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

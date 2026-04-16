@@ -7,14 +7,17 @@ public class ItemIsnpection : MonoBehaviour
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs _input;
     private Interact interact;
+    public GameObject InspectItemCamera;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         thirdPersonController = player.GetComponent<ThirdPersonController>();
-        _input = player.GetComponent<StarterAssetsInputs>();
         interact = player.GetComponent<Interact>();
+        _input = player.GetComponent<StarterAssetsInputs>();
+    }
 
+    void OnEnable()
+    {
         thirdPersonController.enabled = false;
         interact.canInteract = false;
     }
@@ -39,5 +42,13 @@ public class ItemIsnpection : MonoBehaviour
             // Rotación vertical (arriba/abajo)
             transform.Rotate(Vector3.right, -mouseY * rotationSpeed * Time.deltaTime, Space.World);
         }
+    }
+
+    public void ExitItemInspection()
+    {     
+        thirdPersonController.enabled = true;
+        interact.canInteract = true;
+
+        InspectItemCamera.SetActive(false);
     }
 }
