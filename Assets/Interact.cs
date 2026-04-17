@@ -36,6 +36,7 @@ public class Interact : MonoBehaviour
     {
         if (canInteract)
         {
+            //interactuar con items
             IInteractable foundInteractable = null;
             Item foundItem = null;
 
@@ -44,7 +45,9 @@ public class Interact : MonoBehaviour
 
             // interactuar con items
             RaycastHit[] interactHits = Physics.SphereCastAll(ray, radius, interactRange, interactLayerMask);
-            foreach (var hit in interactHits)
+            var sortedInteractHits = interactHits.OrderBy(h => h.distance);
+
+            foreach (var hit in sortedInteractHits)
             {
                 if (hit.collider.TryGetComponent(out IInteractable interactObj))
                 {
@@ -74,82 +77,82 @@ public class Interact : MonoBehaviour
             }
             else
             {
-                foundInteractable = null;
-                foundItem = null;
-
                 ClearInteractInformation();
+            }
 
-                List<Item> foundItems = new List<Item>();
+            // buscar items
+            Item foundItem2 = null;
+            List<Item> foundItems = new List<Item>();
 
-                RaycastHit[] detectHits = Physics.SphereCastAll(ray, detectItemRadius, detectItemRange, interactLayerMask);
+            RaycastHit[] detectHits = Physics.SphereCastAll(ray, detectItemRadius, detectItemRange, interactLayerMask);
+            var sortedHits = detectHits.OrderBy(h => h.distance);
 
-                var sortedHits = detectHits.OrderBy(h => h.distance);
-
-                foreach (var hit in sortedHits)
+            foreach (var hit in sortedHits)
+            {
+                if (hit.collider.TryGetComponent(out IInteractable interactObj))
                 {
-                    if (hit.collider.TryGetComponent(out IInteractable interactObj))
+                    foundItem2 = hit.collider.GetComponent<Item>();
+
+                    // 🔥 IGNORAR el item que ya estás interactuando
+                    if (foundItem2 != null && foundItem2 != foundItem)
                     {
-                        foundItem = hit.collider.GetComponent<Item>();
-
-                        if (foundItem != null)
-                        {
-                            foundItems.Add(foundItem);
-                        }
+                        foundItems.Add(foundItem2);
                     }
-                }
-
-                // crear UI para cada item
-                HashSet<Item> currentFrameItems = new HashSet<Item>();
-                foreach (var itm in foundItems)
-                {
-                    currentFrameItems.Add(itm);
-
-                    // SI YA EXISTE → solo actualizar posición
-                    if (activeItemUIs.ContainsKey(itm))
-                    {
-                        GameObject ui = activeItemUIs[itm];
-                        RectTransform uiRect = ui.GetComponent<RectTransform>();
-
-                        Vector3 screenPos = itm.itemInteractUiPosition.position;
-
-                        if (screenPos.z < 0)
-                        {
-                            ui.SetActive(false);
-                            continue;
-                        }
-
-                        ui.SetActive(true);
-                        uiRect.position = screenPos;
-                    }
-                    else
-                    {
-                        // NO EXISTE → crear uno nuevo
-                        GameObject ui = Instantiate(foundedItemUi, interactUiCanvas.transform);
-                        RectTransform uiRect = ui.GetComponent<RectTransform>();
-
-                        uiRect.position = itm.itemInteractUiPosition.position;
-
-                        ui.SetActive(true);
-
-                        activeItemUIs.Add(itm, ui);
-                    }
-                }  
-
-                List<Item> itemsToRemove = new List<Item>();
-                foreach (var kvp in activeItemUIs)
-                {
-                    if (!currentFrameItems.Contains(kvp.Key))
-                    {
-                        Destroy(kvp.Value);
-                        itemsToRemove.Add(kvp.Key);
-                    }
-                }
-
-                foreach (var itm in itemsToRemove)
-                {
-                    activeItemUIs.Remove(itm);
                 }
             }
+
+            // crear UI para cada item
+            HashSet<Item> currentFrameItems = new HashSet<Item>();
+            foreach (var itm in foundItems)
+            {
+                currentFrameItems.Add(itm);
+
+                // SI YA EXISTE → solo actualizar posición
+                if (activeItemUIs.ContainsKey(itm))
+                {
+                    GameObject ui = activeItemUIs[itm];
+                    RectTransform uiRect = ui.GetComponent<RectTransform>();
+
+                    Vector3 screenPos = itm.itemInteractUiPosition.position;
+
+                    if (screenPos.z < 0)
+                    {
+                        ui.SetActive(false);
+                        continue;
+                    }
+
+                    ui.SetActive(true);
+                    uiRect.position = screenPos;
+                }
+                else
+                {
+                    // NO EXISTE → crear uno nuevo
+                    GameObject ui = Instantiate(foundedItemUi, interactUiCanvas.transform);
+                    RectTransform uiRect = ui.GetComponent<RectTransform>();
+
+                    uiRect.position = itm.itemInteractUiPosition.position;
+
+                    ui.SetActive(true);
+
+                    activeItemUIs.Add(itm, ui);
+                }
+            }  
+
+            List<Item> itemsToRemove = new List<Item>();
+            foreach (var kvp in activeItemUIs)
+            {
+                if (!currentFrameItems.Contains(kvp.Key))
+                {
+                    Destroy(kvp.Value);
+                    itemsToRemove.Add(kvp.Key);
+                }
+            }
+
+            foreach (var itm in itemsToRemove)
+            {
+                activeItemUIs.Remove(itm);
+            }
+            
         }
         else
         {
