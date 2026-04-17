@@ -9,7 +9,7 @@ public class Interact : MonoBehaviour
 {
     public GameObject aim;
     private Transform interacterSource;
-    public float InteractRange;
+    public float interactRange;
     public IInteractable interactingObject;
     public float radius = 0.5f;
     public float rayOffsetX;
@@ -17,6 +17,8 @@ public class Interact : MonoBehaviour
     public GameObject interactItemUi;
     public GameObject foundedItemUi;
     public Item item;
+    public float detectItemRadius;
+    public float detectItemRange;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,7 +35,7 @@ public class Interact : MonoBehaviour
             Ray ray = new Ray(origin, interacterSource.forward); // usar items
             Ray detectionRay = new Ray(origin, interacterSource.forward); // detectar items
 
-            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, InteractRange))
+            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, interactRange))
             {
                 if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
@@ -58,7 +60,7 @@ public class Interact : MonoBehaviour
                 ClearInteractInformation();
 
                 // buscar items
-                if (Physics.SphereCast(detectionRay, radius * 2f, out RaycastHit detectionHitInfo, InteractRange * 2f))
+                if (Physics.SphereCast(detectionRay, detectItemRadius, out RaycastHit detectionHitInfo, detectItemRange))
                 {
                     if (detectionHitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                     {
@@ -107,7 +109,7 @@ public class Interact : MonoBehaviour
         }
 
         Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
-        Vector3 endPoint = origin + interacterSource.forward * InteractRange;
+        Vector3 endPoint = origin + interacterSource.forward * interactRange;
 
         Gizmos.color = Color.red;
 
