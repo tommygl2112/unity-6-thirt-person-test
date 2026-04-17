@@ -46,11 +46,6 @@ public class Item : MonoBehaviour, IInteractable
             inspectedRenderer.material = meshRenderer.material;
 
             inspectItemCamera.SetActive(true);
-            
-            if(destroyItem)
-            {
-                Destroy(gameObject);
-            }
         }
     }
 }

@@ -50,5 +50,10 @@ public class ItemIsnpection : MonoBehaviour
         interact.canInteract = true;
 
         InspectItemCamera.SetActive(false);
+
+        if (interact.item.destroyItem)
+        {
+            Destroy(interact.item.gameObject);
+        }
     }
 }

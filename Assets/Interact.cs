@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public interface IInteractable
 {
@@ -20,6 +22,8 @@ public class Interact : MonoBehaviour
     public float detectItemRadius;
     public float detectItemRange;
     public LayerMask interactLayerMask;
+    public Dictionary<Item, GameObject> activeItemUIs = new Dictionary<Item, GameObject>();
+    public GameObject interactUiCanvas;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,61 +36,124 @@ public class Interact : MonoBehaviour
     {
         if (canInteract)
         {
+            IInteractable foundInteractable = null;
+            Item foundItem = null;
+
             Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
             Ray ray = new Ray(origin, interacterSource.forward); // usar items
-            Ray detectionRay = new Ray(origin, interacterSource.forward); // detectar items
 
-            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, interactRange, interactLayerMask))
+            // interactuar con items
+            RaycastHit[] interactHits = Physics.SphereCastAll(ray, radius, interactRange, interactLayerMask);
+            foreach (var hit in interactHits)
             {
-                if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                if (hit.collider.TryGetComponent(out IInteractable interactObj))
                 {
-                    interactingObject = interactObj; // StarterAssetsInputs.cs
-
-                    item = hitInfo.collider.GetComponent<Item>();
-                    if (item != null)
-                    {
-                        RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
-                        uiRect.position = item.itemInteractUiPosition.position;   
-                        foundedItemUi.SetActive(false);
-                        interactItemUi.SetActive(true);
-                    }
+                    foundInteractable = interactObj;
+                    foundItem = hit.collider.GetComponent<Item>();
+                    break; // opcional: parar en el primero
                 }
-                else
+            }
+            if (foundInteractable != null)
+            {
+                interactingObject = foundInteractable;
+                item = foundItem;
+
+                if (item != null)
                 {
-                    ClearInteractInformation();
+                    if (activeItemUIs.ContainsKey(foundItem))
+                    {
+                        Destroy(activeItemUIs[foundItem]);
+                        activeItemUIs.Remove(foundItem);
+                    }
+
+                    RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
+                    uiRect.position = item.itemInteractUiPosition.position;
+
+                    interactItemUi.SetActive(true);
                 }
             }
             else
             {
+                foundInteractable = null;
+                foundItem = null;
+
                 ClearInteractInformation();
 
-                // buscar items
-                if (Physics.SphereCast(detectionRay, detectItemRadius, out RaycastHit detectionHitInfo, detectItemRange, interactLayerMask))
+                List<Item> foundItems = new List<Item>();
+
+                RaycastHit[] detectHits = Physics.SphereCastAll(ray, detectItemRadius, detectItemRange, interactLayerMask);
+
+                var sortedHits = detectHits.OrderBy(h => h.distance);
+
+                foreach (var hit in sortedHits)
                 {
-                    if (detectionHitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
+                    if (hit.collider.TryGetComponent(out IInteractable interactObj))
                     {
-                        item = detectionHitInfo.collider.GetComponent<Item>();
-                        if (item != null)
+                        foundItem = hit.collider.GetComponent<Item>();
+
+                        if (foundItem != null)
                         {
-                            RectTransform uiRect = foundedItemUi.GetComponent<RectTransform>();
-                            uiRect.position = item.itemInteractUiPosition.position; 
-                            foundedItemUi.SetActive(true);
+                            foundItems.Add(foundItem);
                         }
+                    }
+                }
+
+                // crear UI para cada item
+                HashSet<Item> currentFrameItems = new HashSet<Item>();
+                foreach (var itm in foundItems)
+                {
+                    currentFrameItems.Add(itm);
+
+                    // SI YA EXISTE → solo actualizar posición
+                    if (activeItemUIs.ContainsKey(itm))
+                    {
+                        GameObject ui = activeItemUIs[itm];
+                        RectTransform uiRect = ui.GetComponent<RectTransform>();
+
+                        Vector3 screenPos = itm.itemInteractUiPosition.position;
+
+                        if (screenPos.z < 0)
+                        {
+                            ui.SetActive(false);
+                            continue;
+                        }
+
+                        ui.SetActive(true);
+                        uiRect.position = screenPos;
                     }
                     else
                     {
-                        foundedItemUi.SetActive(false);
+                        // NO EXISTE → crear uno nuevo
+                        GameObject ui = Instantiate(foundedItemUi, interactUiCanvas.transform);
+                        RectTransform uiRect = ui.GetComponent<RectTransform>();
+
+                        uiRect.position = itm.itemInteractUiPosition.position;
+
+                        ui.SetActive(true);
+
+                        activeItemUIs.Add(itm, ui);
+                    }
+                }  
+
+                List<Item> itemsToRemove = new List<Item>();
+                foreach (var kvp in activeItemUIs)
+                {
+                    if (!currentFrameItems.Contains(kvp.Key))
+                    {
+                        Destroy(kvp.Value);
+                        itemsToRemove.Add(kvp.Key);
                     }
                 }
-                else
+
+                foreach (var itm in itemsToRemove)
                 {
-                    foundedItemUi.SetActive(false);
+                    activeItemUIs.Remove(itm);
                 }
             }
         }
         else
         {
-            foundedItemUi.SetActive(false);
+            // foundedItemUi.SetActive(false);
             interactItemUi.SetActive(false);
         }
 
