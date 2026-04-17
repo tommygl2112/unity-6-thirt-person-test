@@ -9,7 +9,7 @@ public class Interact : MonoBehaviour
 {
     public GameObject aim;
     private Transform interacterSource;
-    public float interactRange;
+    public float interactRange = 1f;
     public IInteractable interactingObject;
     public float radius = 0.5f;
     public float rayOffsetX;
@@ -19,6 +19,7 @@ public class Interact : MonoBehaviour
     public Item item;
     public float detectItemRadius;
     public float detectItemRange;
+    public LayerMask interactLayerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,7 +36,7 @@ public class Interact : MonoBehaviour
             Ray ray = new Ray(origin, interacterSource.forward); // usar items
             Ray detectionRay = new Ray(origin, interacterSource.forward); // detectar items
 
-            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, interactRange))
+            if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, interactRange, interactLayerMask))
             {
                 if (hitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                 {
@@ -60,7 +61,7 @@ public class Interact : MonoBehaviour
                 ClearInteractInformation();
 
                 // buscar items
-                if (Physics.SphereCast(detectionRay, detectItemRadius, out RaycastHit detectionHitInfo, detectItemRange))
+                if (Physics.SphereCast(detectionRay, detectItemRadius, out RaycastHit detectionHitInfo, detectItemRange, interactLayerMask))
                 {
                     if (detectionHitInfo.collider.gameObject.TryGetComponent(out IInteractable interactObj))
                     {
@@ -110,11 +111,16 @@ public class Interact : MonoBehaviour
 
         Vector3 origin = interacterSource.position + (-interacterSource.right * rayOffsetX);
         Vector3 endPoint = origin + interacterSource.forward * interactRange;
+        Vector3 endPoint2 = origin + interacterSource.forward * detectItemRange;
 
         Gizmos.color = Color.red;
-
         Gizmos.DrawLine(origin, endPoint);
         Gizmos.DrawWireSphere(origin, radius);
         Gizmos.DrawWireSphere(endPoint, radius);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(origin, endPoint2);
+        Gizmos.DrawWireSphere(origin, detectItemRadius);
+        Gizmos.DrawWireSphere(endPoint2, detectItemRadius);
     }
 }
