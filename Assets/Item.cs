@@ -13,11 +13,12 @@ public class Item : MonoBehaviour, IInteractable
     public ItemIsnpection itemIsnpection;
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
-    public bool destroyItem;
+    public bool destroyItem; // ItemIsnpection.cs
     public bool viewItem;
-    public Animator StateDrivenCameraAnimator;
+    public Animator stateDrivenCameraAnimator;
     public GameObject viewItemCamera;
-    public Transform itemViewPosition;
+    public GameObject itemViewPosition;
+    public ItemView itemView; // StarterAssetsInputs.cs
 
     void Start()
     {
@@ -53,16 +54,16 @@ public class Item : MonoBehaviour, IInteractable
         }
         else if (viewItem)
         {
-            Debug.Log("viewItem");
-
             Transform target = viewItemCamera.transform;
-            Transform source = itemViewPosition;
+            Transform source = itemViewPosition.transform;
 
             target.position = source.position;
             target.rotation = source.rotation;
             target.localScale = source.localScale;
-            
-            StateDrivenCameraAnimator.SetBool("ViewItem", true); // el animator controla que camara mostrar en State-Driven Camera
+
+            gameObject.GetComponent<ItemView>().StartViewItem();
+
+            stateDrivenCameraAnimator.SetBool("ViewItem", true); // el animator controla que camara mostrar en State-Driven Camera
         }
     }
 }

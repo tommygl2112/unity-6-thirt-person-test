@@ -93,6 +93,17 @@ namespace StarterAssets
 				}
 			}
 		}
+
+		public void OnExitItemView(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (interact.item != null && interact.item.viewItem && interact.item.stateDrivenCameraAnimator.GetBool("ViewItem"))
+				{
+					interact.item.itemView.ExitItemView();
+				}
+			}
+		}
 #endif
 
 
