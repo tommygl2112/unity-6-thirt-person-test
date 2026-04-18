@@ -50,20 +50,29 @@ public class Item : MonoBehaviour, IInteractable
             inspectedFilter.mesh = meshFilter.mesh;
             inspectedRenderer.material = meshRenderer.material;
 
+            itemInspected.GetComponent<ItemIsnpection>().inspectedItemMeshRenderer = meshRenderer;
+            
+            SetViewCameraPosition();
+            stateDrivenCameraAnimator.SetBool("ViewItem", true);
+            
+            meshRenderer.enabled = false;
             inspectItemCamera.SetActive(true);
         }
         else if (viewItem)
         {
-            Transform target = viewItemCamera.transform;
-            Transform source = itemViewPosition.transform;
-
-            target.position = source.position;
-            target.rotation = source.rotation;
-            target.localScale = source.localScale;
-
+            SetViewCameraPosition();
             gameObject.GetComponent<ItemView>().StartViewItem();
-
             stateDrivenCameraAnimator.SetBool("ViewItem", true); // el animator controla que camara mostrar en State-Driven Camera
         }
+    }
+
+    private void SetViewCameraPosition()
+    {
+        Transform target = viewItemCamera.transform;
+        Transform source = itemViewPosition.transform;
+
+        target.position = source.position;
+        target.rotation = source.rotation;
+        target.localScale = source.localScale;
     }
 }

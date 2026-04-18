@@ -8,6 +8,9 @@ public class ItemIsnpection : MonoBehaviour
     private StarterAssetsInputs _input;
     private Interact interact;
     public GameObject InspectItemCamera;
+    public MeshRenderer inspectedItemMeshRenderer; // Item.cs
+    public Camera interactUiCamera;
+    public SkinnedMeshRenderer playerMeshRenderer;
 
     void Awake()
     {
@@ -18,8 +21,10 @@ public class ItemIsnpection : MonoBehaviour
 
     void OnEnable()
     {
+        interactUiCamera.enabled = false;
         thirdPersonController.enabled = false;
         interact.canInteract = false;
+        playerMeshRenderer.enabled = false;
     }
 
     // Update is called once per frame
@@ -49,7 +54,10 @@ public class ItemIsnpection : MonoBehaviour
         thirdPersonController.enabled = true;
         interact.canInteract = true;
 
+        inspectedItemMeshRenderer.enabled = true;
+        playerMeshRenderer.enabled = true;
         InspectItemCamera.SetActive(false);
+        interactUiCamera.enabled = true;
 
         if (interact.item.destroyItem)
         {
