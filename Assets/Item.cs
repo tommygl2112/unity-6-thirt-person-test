@@ -14,6 +14,10 @@ public class Item : MonoBehaviour, IInteractable
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     public bool destroyItem;
+    public bool viewItem;
+    public Animator StateDrivenCameraAnimator;
+    public GameObject viewItemCamera;
+    public Transform itemViewPosition;
 
     void Start()
     {
@@ -46,6 +50,19 @@ public class Item : MonoBehaviour, IInteractable
             inspectedRenderer.material = meshRenderer.material;
 
             inspectItemCamera.SetActive(true);
+        }
+        else if (viewItem)
+        {
+            Debug.Log("viewItem");
+
+            Transform target = viewItemCamera.transform;
+            Transform source = itemViewPosition;
+
+            target.position = source.position;
+            target.rotation = source.rotation;
+            target.localScale = source.localScale;
+            
+            StateDrivenCameraAnimator.SetBool("ViewItem", true); // el animator controla que camara mostrar en State-Driven Camera
         }
     }
 }
