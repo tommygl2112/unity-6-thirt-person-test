@@ -11,6 +11,9 @@ public class ItemIsnpection : MonoBehaviour
     public MeshRenderer inspectedItemMeshRenderer; // Item.cs
     public Camera interactUiCamera;
     public SkinnedMeshRenderer playerMeshRenderer;
+    public GameObject ReadItemCamera;
+    public string[] texts;
+    public bool isReading;
 
     void Awake()
     {
@@ -35,6 +38,8 @@ public class ItemIsnpection : MonoBehaviour
 
     private void CameraRotation()
     {
+        if(isReading){return;}
+
         // if there is an input and camera position is not fixed
         if (_input.look.sqrMagnitude >= 0.01f)
         {
@@ -63,5 +68,17 @@ public class ItemIsnpection : MonoBehaviour
         {
             Destroy(interact.item.gameObject);
         }
+    }
+
+    public void ReadText()
+    {
+        isReading = true;
+        ReadItemCamera.SetActive(true);
+    }
+
+    public void StopReading()
+    {
+        isReading = false;
+        ReadItemCamera.SetActive(false);
     }
 }

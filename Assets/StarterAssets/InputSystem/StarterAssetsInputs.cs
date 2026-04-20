@@ -104,6 +104,17 @@ namespace StarterAssets
 				}
 			}
 		}
+
+		public void OnReadItemText(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf && interact.item.itemIsnpection.isReading == false)
+				{
+					interact.item.itemIsnpection.ReadText();
+				}
+			}
+		} 
 #endif
 
 
