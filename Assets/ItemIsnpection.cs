@@ -16,6 +16,7 @@ public class ItemIsnpection : MonoBehaviour
     public bool isReading;
     public TextMeshProUGUI itemInspectedTextMesh;
     public TextMeshProUGUI readItemTextMesh;
+    public Animator stateDrivenCameraAnimator;
 
     void Awake()
     {
@@ -67,6 +68,8 @@ public class ItemIsnpection : MonoBehaviour
         playerMeshRenderer.enabled = true;
         InspectItemCamera.SetActive(false);
         interactUiCamera.enabled = true;
+
+        stateDrivenCameraAnimator.SetBool("ViewItem", false);
 
         if (interact.item.destroyItem)
         {

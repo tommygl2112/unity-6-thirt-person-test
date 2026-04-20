@@ -87,7 +87,7 @@ namespace StarterAssets
 		{
 			if (context.performed)
 			{
-				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf)
+				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf && interact.item.itemIsnpection.isReading == false)
 				{
 					interact.item.itemIsnpection.ExitItemInspection();
 				}
@@ -115,6 +115,17 @@ namespace StarterAssets
 				}
 			}
 		} 
+
+		public void OnStopReading(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf && interact.item.itemIsnpection.isReading == true)
+				{
+					interact.item.itemIsnpection.StopReading();
+				}
+			}
+		}
 #endif
 
 
