@@ -1,5 +1,6 @@
 using UnityEngine;
 using StarterAssets;
+using TMPro;
 
 public class ItemIsnpection : MonoBehaviour
 {
@@ -12,8 +13,9 @@ public class ItemIsnpection : MonoBehaviour
     public Camera interactUiCamera;
     public SkinnedMeshRenderer playerMeshRenderer;
     public GameObject ReadItemCamera;
-    public string[] texts;
     public bool isReading;
+    public TextMeshProUGUI itemInspectedTextMesh;
+    public TextMeshProUGUI readItemTextMesh;
 
     void Awake()
     {
@@ -28,6 +30,8 @@ public class ItemIsnpection : MonoBehaviour
         thirdPersonController.enabled = false;
         interact.canInteract = false;
         playerMeshRenderer.enabled = false;
+        
+        readItemTextMesh.text = itemInspectedTextMesh.text;
     }
 
     // Update is called once per frame

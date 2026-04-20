@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class Item : MonoBehaviour, IInteractable
 {
@@ -41,6 +42,7 @@ public class Item : MonoBehaviour, IInteractable
         else if (inspectItemAction)
         {
             itemIsnpection = itemInspected.GetComponent<ItemIsnpection>();
+            itemIsnpection.itemInspectedTextMesh = gameObject.GetComponent<TextMeshProUGUI>();
 
             // Obtener componentes del objeto inspeccionado
             MeshFilter inspectedFilter = itemInspected.GetComponent<MeshFilter>();
@@ -54,6 +56,7 @@ public class Item : MonoBehaviour, IInteractable
             
             SetViewCameraPosition();
             stateDrivenCameraAnimator.SetBool("ViewItem", true);
+
             
             meshRenderer.enabled = false;
             inspectItemCamera.SetActive(true);
