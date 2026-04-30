@@ -127,15 +127,36 @@ public class DoorHandIK : MonoBehaviour
         {
             if (other.bounds.Intersects(doorSideL.bounds))
             {
+                ResetIK();
                 doorSideLCollider = true;
                 doorSideRCollider = false;
             }
 
             if (other.bounds.Intersects(doorSideR.bounds))
             {
+                ResetIK();
                 doorSideRCollider = true;
                 doorSideLCollider = false;
             }
         }
     }
+
+    void ResetIK()
+{
+    // Poner weights en 0 inmediatamente
+    leftHandIK.weight = 0f;
+    leftHandRotation.weight = 0f;
+    rightHandIK.weight = 0f;
+    rightHandRotation.weight = 0f;
+
+    // Resetear posición/rotación de targets al rig original (ej: huesos)
+    leftHandTarget.localPosition = Vector3.zero;
+    leftHandTarget.localRotation = Quaternion.identity;
+
+    rightHandTarget.localPosition = Vector3.zero;
+    rightHandTarget.localRotation = Quaternion.identity;
+
+    isFollowing = false;
+    targetWeight = 0f;
+}
 }
