@@ -174,8 +174,6 @@ public class DoorHandIK : MonoBehaviour
         hinge.spring = spring;
         hinge.useSpring = true;
 
-        locked = false;
-
         Rigidbody rb = hinge.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.None;
     }
