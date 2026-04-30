@@ -40,7 +40,6 @@ public class DoorHandIK : MonoBehaviour
 
     bool isFollowing = false;
     public float openAngle = 90f;
-    bool locked = false;
 
 
     void Start()
@@ -52,11 +51,6 @@ public class DoorHandIK : MonoBehaviour
     void Update()
     {
         float hingeAngle = hinge.angle;
-
-        if (!locked && Mathf.Abs(hingeAngle) >= openAngle)
-        {
-            LockDoor();
-        }
 
         // Ángulo actual de la puerta
         float angle = Quaternion.Angle(
@@ -169,20 +163,6 @@ public class DoorHandIK : MonoBehaviour
 
         isFollowing = false;
         targetWeight = 0f;
-    }
-
-    void LockDoor()
-    {
-        locked = true;
-
-        Rigidbody rb = hinge.GetComponent<Rigidbody>();
-
-        // Detener movimiento
-        rb.angularVelocity = Vector3.zero;
-        rb.linearVelocity = Vector3.zero;
-
-        // Congelar rotación
-        rb.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     public void CloseDoor()
