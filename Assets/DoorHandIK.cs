@@ -30,6 +30,7 @@ public class DoorHandIK : MonoBehaviour
 
     Quaternion startRotation;
     float lastAngle;
+    public float handOffset = -0.1f;
 
 
     void Start()
@@ -52,16 +53,17 @@ public class DoorHandIK : MonoBehaviour
         if (doorSideLCollider || doorSideRCollider)
         {
             targetWeight = 1f;
+            Vector3 offset = doorHandleTarget.forward * handOffset;
 
             // La mano sigue SIEMPRE al picaporte
             if (doorSideLCollider)
             {
-                leftHandTarget.position = doorHandleTarget.position;
+                leftHandTarget.position = doorHandleTarget.position + offset;
                 leftHandTarget.rotation = doorHandleTarget.rotation;
             }
             else if (doorSideRCollider)
             {
-                rightHandTarget.position = doorHandleTarget.position;
+                rightHandTarget.position = doorHandleTarget.position + offset;
                 rightHandTarget.rotation = doorHandleTarget.rotation;
             }
         }
