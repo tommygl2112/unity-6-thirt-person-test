@@ -37,6 +37,8 @@ public class DoorHandIK : MonoBehaviour
     float lastAngle;
 
     bool isFollowing = false;
+    public float openAngle = 90f;
+bool locked = false;
 
 
     void Start()
@@ -47,6 +49,13 @@ public class DoorHandIK : MonoBehaviour
 
     void Update()
     {
+        float hingeAngle = hinge.angle;
+
+        if (!locked && Mathf.Abs(hingeAngle) >= openAngle)
+        {
+            LockDoor();
+        }
+
         // Ángulo actual de la puerta
         float angle = Quaternion.Angle(
             startRotation,
@@ -142,21 +151,35 @@ public class DoorHandIK : MonoBehaviour
     }
 
     void ResetIK()
-{
-    // Poner weights en 0 inmediatamente
-    leftHandIK.weight = 0f;
-    leftHandRotation.weight = 0f;
-    rightHandIK.weight = 0f;
-    rightHandRotation.weight = 0f;
+    {
+        // Poner weights en 0 inmediatamente
+        leftHandIK.weight = 0f;
+        leftHandRotation.weight = 0f;
+        rightHandIK.weight = 0f;
+        rightHandRotation.weight = 0f;
 
-    // Resetear posición/rotación de targets al rig original (ej: huesos)
-    leftHandTarget.localPosition = Vector3.zero;
-    leftHandTarget.localRotation = Quaternion.identity;
+        // Resetear posición/rotación de targets al rig original (ej: huesos)
+        leftHandTarget.localPosition = Vector3.zero;
+        leftHandTarget.localRotation = Quaternion.identity;
 
-    rightHandTarget.localPosition = Vector3.zero;
-    rightHandTarget.localRotation = Quaternion.identity;
+        rightHandTarget.localPosition = Vector3.zero;
+        rightHandTarget.localRotation = Quaternion.identity;
 
-    isFollowing = false;
-    targetWeight = 0f;
-}
+        isFollowing = false;
+        targetWeight = 0f;
+    }
+
+    void LockDoor()
+    {
+        locked = true;
+
+        Rigidbody rb = hinge.GetComponent<Rigidbody>();
+
+        // Detener movimiento
+        rb.angularVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
+
+        // Congelar rotación
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
 }
