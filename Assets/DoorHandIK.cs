@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using System.Collections;
 
 public class DoorHandIK : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class DoorHandIK : MonoBehaviour
     private bool doorSideLCollider;
     public BoxCollider doorSideR;
     private bool doorSideRCollider;
+    public SphereCollider rangeToClose;
 
     [Header("Config")]
     public float blendSpeed = 5f;
@@ -38,7 +40,7 @@ public class DoorHandIK : MonoBehaviour
 
     bool isFollowing = false;
     public float openAngle = 90f;
-bool locked = false;
+    bool locked = false;
 
 
     void Start()
@@ -181,5 +183,20 @@ bool locked = false;
 
         // Congelar rotación
         rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public void CloseDoor()
+    {
+        JointSpring spring = hinge.spring;
+
+        spring.targetPosition = 0f; // cerrar puerta
+
+        hinge.spring = spring;
+        hinge.useSpring = true;
+
+        locked = false;
+
+        Rigidbody rb = hinge.GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.None;
     }
 }
