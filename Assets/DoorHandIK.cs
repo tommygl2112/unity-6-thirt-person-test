@@ -31,8 +31,6 @@ public class DoorHandIK : MonoBehaviour
     Quaternion startRotation;
     float lastAngle;
 
-    bool isFollowing = false;
-
 
     void Start()
     {
@@ -69,8 +67,6 @@ public class DoorHandIK : MonoBehaviour
         }
         else
         {
-            // Cuando se detiene, soltar
-            isFollowing = false;
             targetWeight = 0f;
         }
 
@@ -133,17 +129,9 @@ public class DoorHandIK : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.bounds.Intersects(doorSideL.bounds))
-            {
-                ResetIK();
-                doorSideLCollider = false;
-            }
-
-            if (other.bounds.Intersects(doorSideR.bounds))
-            {
-                ResetIK();
-                doorSideRCollider = false;
-            }
+            doorSideLCollider = false;
+            doorSideRCollider = false;
+            ResetIK();
         }
     }
 
@@ -162,7 +150,6 @@ public class DoorHandIK : MonoBehaviour
         rightHandTarget.localPosition = Vector3.zero;
         rightHandTarget.localRotation = Quaternion.identity;
 
-        isFollowing = false;
         targetWeight = 0f;
     }
 
