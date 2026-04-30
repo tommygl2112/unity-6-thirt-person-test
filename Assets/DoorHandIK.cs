@@ -145,6 +145,24 @@ public class DoorHandIK : MonoBehaviour
             }
         }
     }
+    
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (other.bounds.Intersects(doorSideL.bounds))
+            {
+                ResetIK();
+                doorSideLCollider = false;
+            }
+
+            if (other.bounds.Intersects(doorSideR.bounds))
+            {
+                ResetIK();
+                doorSideRCollider = false;
+            }
+        }
+    }
 
     void ResetIK()
     {
