@@ -22,16 +22,9 @@ public class DoorHandIK : MonoBehaviour
     private bool doorSideLCollider;
     public BoxCollider doorSideR;
     private bool doorSideRCollider;
-    public SphereCollider rangeToClose;
 
     [Header("Config")]
     public float blendSpeed = 5f;
-
-    // Cuántos grados debe moverse para considerar "empujando"
-    public float pushThreshold = 5f;
-
-    // Velocidad mínima para considerar que la puerta sigue moviéndose
-    public float movementThreshold = 1f;
 
     float targetWeight;
 
@@ -39,7 +32,6 @@ public class DoorHandIK : MonoBehaviour
     float lastAngle;
 
     bool isFollowing = false;
-    public float openAngle = 90f;
 
 
     void Start()
@@ -58,17 +50,8 @@ public class DoorHandIK : MonoBehaviour
             transform.localRotation
         );
 
-        // Velocidad angular (aproximada)
-        float angularSpeed = Mathf.Abs(angle - lastAngle) / Time.deltaTime;
-
-        // Detectar inicio de empuje
-        if (angle > pushThreshold)
-        {
-            isFollowing = true;
-        }
-
         // Si la puerta sigue moviéndose, mantener la mano
-        if (isFollowing && angularSpeed > movementThreshold)
+        if (doorSideLCollider || doorSideRCollider)
         {
             targetWeight = 1f;
 
