@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
+using StarterAssets;
+
 
 public class DoorHandIK : MonoBehaviour
 {
@@ -15,9 +17,8 @@ public class DoorHandIK : MonoBehaviour
     public Transform rightHandTarget;
 
 
-    [Header("Puerta")]
+    [Header("Door")]
     public Transform doorHandleTarget;
-    public HingeJoint hinge;
     public BoxCollider doorSideL;
     private bool doorSideLCollider;
     public BoxCollider doorSideR;
@@ -32,17 +33,27 @@ public class DoorHandIK : MonoBehaviour
     float lastAngle;
     public float handOffset = -0.1f;
 
+    [Header("Door Rotation")]
+    public float openAngle = 90f;
+    public float openSpeed = 2f;
+    public bool isOpen = false;
+    private Quaternion _closedRotation;
+    private Quaternion _openRotation;
+    private Coroutine _currentCoroutine;
+
+    public StarterAssetsInputs _input;
 
     void Start()
     {
         startRotation = transform.localRotation;
         lastAngle = 0f;
+
+        _closedRotation = transform.rotation;
+        _openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0, openAngle, 0));
     }
 
     void Update()
     {
-        float hingeAngle = hinge.angle;
-
         // Ángulo actual de la puerta
         float angle = Quaternion.Angle(
             startRotation,
@@ -109,21 +120,12 @@ public class DoorHandIK : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isOpen)
         {
-            if (other.bounds.Intersects(doorSideL.bounds))
-            {
-                ResetIK();
-                doorSideLCollider = true;
-                doorSideRCollider = false;
-            }
+            ResetIK();
 
-            if (other.bounds.Intersects(doorSideR.bounds))
-            {
-                ResetIK();
-                doorSideRCollider = true;
-                doorSideLCollider = false;
-            }
+            if (_currentCoroutine != null) StopCoroutine(_currentCoroutine);
+            _currentCoroutine = StartCoroutine(ToggleDoor(other));
         }
     }
     
@@ -155,16 +157,37 @@ public class DoorHandIK : MonoBehaviour
         targetWeight = 0f;
     }
 
-    public void CloseDoor()
+private IEnumerator ToggleDoor(Collider other)
+{
+    Vector3 toPlayer = other.transform.position - transform.position;
+    float direction = Vector3.Dot(transform.right, toPlayer) > 0 ? 1f : -1f;
+
+    Quaternion targetRotation;
+
+    if (!isOpen)
     {
-        JointSpring spring = hinge.spring;
-
-        spring.targetPosition = 0f; // cerrar puerta
-
-        hinge.spring = spring;
-        hinge.useSpring = true;
-
-        Rigidbody rb = hinge.GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.None;
+        targetRotation = Quaternion.Euler(
+            transform.eulerAngles + new Vector3(0, openAngle * direction, 0)
+        );
     }
+    else
+    {
+        targetRotation = _closedRotation;
+    }
+
+    isOpen = !isOpen;
+
+    while (Quaternion.Angle(transform.rotation, targetRotation) > 0.01f)
+    {
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            Time.deltaTime * openSpeed
+        );
+
+        yield return null;
+    }
+
+    transform.rotation = targetRotation;
+}
 }
