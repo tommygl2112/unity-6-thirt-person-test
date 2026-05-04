@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using System.Collections;
-using StarterAssets;
-
 
 public class DoorHandIK : MonoBehaviour
 {
@@ -11,11 +9,10 @@ public class DoorHandIK : MonoBehaviour
     public MultiRotationConstraint leftHandRotation;
     public Transform leftHandTarget;
 
-    [Header("RightIK")]
+    [Header("Right IK")]
     public TwoBoneIKConstraint rightHandIK;
     public MultiRotationConstraint rightHandRotation;
     public Transform rightHandTarget;
-
 
     [Header("Door")]
     public Transform doorHandleTarget;
@@ -24,97 +21,43 @@ public class DoorHandIK : MonoBehaviour
     public BoxCollider doorSideR;
     private bool doorSideRCollider;
 
-    [Header("Config")]
-    public float blendSpeed = 5f;
-
-    float targetWeight;
-
-    Quaternion startRotation;
-    float lastAngle;
+    [Header("IK Timing")]
+    public float weightUpSpeed = 4f;
+    public float weightDownSpeed = 2f;
+    public float holdTime = 1.2f;
     public float handOffset = -0.1f;
 
     [Header("Door Rotation")]
     public float openAngle = 90f;
     public float openSpeed = 2f;
     public bool isOpen = false;
-    private Quaternion _closedRotation;
-    private Quaternion _openRotation;
-    private Coroutine _currentCoroutine;
 
-    public StarterAssetsInputs _input;
+    private Quaternion _closedRotation;
+    private Coroutine _doorCoroutine;
+    private Coroutine _ikCoroutine;
+
+    [Header("Auto Close")]
+    public float closeDistance = 3f;
+    private Transform currentPlayer;
 
     void Start()
     {
-        startRotation = transform.localRotation;
-        lastAngle = 0f;
-
         _closedRotation = transform.rotation;
-        _openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0, openAngle, 0));
     }
 
     void Update()
     {
-        // Ángulo actual de la puerta
-        float angle = Quaternion.Angle(
-            startRotation,
-            transform.localRotation
-        );
-
-        // Si la puerta sigue moviéndose, mantener la mano
-        if (doorSideLCollider || doorSideRCollider)
+        // AUTO CLOSE
+        if (isOpen && currentPlayer != null)
         {
-            targetWeight = 1f;
-            Vector3 offset = doorHandleTarget.forward * handOffset;
+            float distance = Vector3.Distance(transform.position, currentPlayer.position);
 
-            // La mano sigue SIEMPRE al picaporte
-            if (doorSideLCollider)
+            if (distance > closeDistance)
             {
-                leftHandTarget.position = doorHandleTarget.position + offset;
-                leftHandTarget.rotation = doorHandleTarget.rotation;
+                if (_doorCoroutine != null) StopCoroutine(_doorCoroutine);
+                _doorCoroutine = StartCoroutine(ToggleDoor(null));
+                currentPlayer = null;
             }
-            else if (doorSideRCollider)
-            {
-                rightHandTarget.position = doorHandleTarget.position + offset;
-                rightHandTarget.rotation = doorHandleTarget.rotation;
-            }
-        }
-        else
-        {
-            targetWeight = 0f;
-        }
-
-        // Guardar para el siguiente frame
-        lastAngle = angle;
-
-        if (doorSideLCollider)
-        {
-            // Blend suave del IK
-            leftHandIK.weight = Mathf.Lerp(
-                leftHandIK.weight,
-                targetWeight,
-                Time.deltaTime * blendSpeed
-            );
-
-            leftHandRotation.weight = Mathf.Lerp(
-                leftHandRotation.weight,
-                targetWeight,
-                Time.deltaTime * blendSpeed
-            );
-        }
-        else if (doorSideRCollider)
-        {
-            // Blend suave del IK
-            rightHandIK.weight = Mathf.Lerp(
-                rightHandIK.weight,
-                targetWeight,
-                Time.deltaTime * blendSpeed
-            );
-
-            rightHandRotation.weight = Mathf.Lerp(
-                rightHandRotation.weight,
-                targetWeight,
-                Time.deltaTime * blendSpeed
-            );
         }
     }
 
@@ -122,72 +65,135 @@ public class DoorHandIK : MonoBehaviour
     {
         if (other.CompareTag("Player") && !isOpen)
         {
-            ResetIK();
+            currentPlayer = other.transform;
 
-            if (_currentCoroutine != null) StopCoroutine(_currentCoroutine);
-            _currentCoroutine = StartCoroutine(ToggleDoor(other));
+            // Detectar lado del jugador
+            Vector3 toPlayer = other.transform.position - transform.position;
+            float dot = Vector3.Dot(transform.right, toPlayer);
+
+            doorSideLCollider = dot < 0;
+            doorSideRCollider = dot > 0;
+
+            // IK
+            if (_ikCoroutine != null) StopCoroutine(_ikCoroutine);
+            _ikCoroutine = StartCoroutine(HandleIK());
+
+            // PUERTA
+            if (_doorCoroutine != null) StopCoroutine(_doorCoroutine);
+            _doorCoroutine = StartCoroutine(ToggleDoor(other));
         }
     }
-    
+
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             doorSideLCollider = false;
             doorSideRCollider = false;
-            ResetIK();
+        }
+    }
+
+    private IEnumerator ToggleDoor(Collider other)
+    {
+        float direction = 1f;
+
+        if (other != null)
+        {
+            Vector3 toPlayer = other.transform.position - transform.position;
+            direction = Vector3.Dot(transform.right, toPlayer) > 0 ? 1f : -1f;
+        }
+
+        Quaternion targetRotation;
+
+        if (!isOpen)
+        {
+            targetRotation = Quaternion.Euler(
+                transform.eulerAngles + new Vector3(0, openAngle * direction, 0)
+            );
+        }
+        else
+        {
+            targetRotation = _closedRotation;
+        }
+
+        isOpen = !isOpen;
+
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.01f)
+        {
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                targetRotation,
+                Time.deltaTime * openSpeed
+            );
+
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+    }
+
+    private IEnumerator HandleIK()
+    {
+        float weight = 0f;
+
+        Vector3 offset = doorHandleTarget.forward * handOffset;
+
+        bool useLeft = doorSideLCollider;
+        bool useRight = doorSideRCollider;
+
+        // SUBIR
+        while (weight < 1f)
+        {
+            weight += Time.deltaTime * weightUpSpeed;
+            weight = Mathf.Clamp01(weight);
+
+            ApplyIK(weight, offset, useLeft, useRight);
+
+            yield return null;
+        }
+
+        // MANTENER
+        yield return new WaitForSeconds(holdTime);
+
+        // BAJAR
+        while (weight > 0f)
+        {
+            weight -= Time.deltaTime * weightDownSpeed;
+            weight = Mathf.Clamp01(weight);
+
+            ApplyIK(weight, offset, useLeft, useRight);
+
+            yield return null;
+        }
+
+        ResetIK();
+    }
+
+    private void ApplyIK(float weight, Vector3 offset, bool useLeft, bool useRight)
+    {
+        if (useLeft)
+        {
+            leftHandTarget.position = doorHandleTarget.position + offset;
+            leftHandTarget.rotation = doorHandleTarget.rotation;
+
+            leftHandIK.weight = weight;
+            leftHandRotation.weight = weight;
+        }
+        else if (useRight)
+        {
+            rightHandTarget.position = doorHandleTarget.position + offset;
+            rightHandTarget.rotation = doorHandleTarget.rotation;
+
+            rightHandIK.weight = weight;
+            rightHandRotation.weight = weight;
         }
     }
 
     void ResetIK()
     {
-        // Poner weights en 0 inmediatamente
         leftHandIK.weight = 0f;
         leftHandRotation.weight = 0f;
         rightHandIK.weight = 0f;
         rightHandRotation.weight = 0f;
-
-        // Resetear posición/rotación de targets al rig original (ej: huesos)
-        leftHandTarget.localPosition = Vector3.zero;
-        leftHandTarget.localRotation = Quaternion.identity;
-
-        rightHandTarget.localPosition = Vector3.zero;
-        rightHandTarget.localRotation = Quaternion.identity;
-
-        targetWeight = 0f;
     }
-
-private IEnumerator ToggleDoor(Collider other)
-{
-    Vector3 toPlayer = other.transform.position - transform.position;
-    float direction = Vector3.Dot(transform.right, toPlayer) > 0 ? 1f : -1f;
-
-    Quaternion targetRotation;
-
-    if (!isOpen)
-    {
-        targetRotation = Quaternion.Euler(
-            transform.eulerAngles + new Vector3(0, openAngle * direction, 0)
-        );
-    }
-    else
-    {
-        targetRotation = _closedRotation;
-    }
-
-    isOpen = !isOpen;
-
-    while (Quaternion.Angle(transform.rotation, targetRotation) > 0.01f)
-    {
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            targetRotation,
-            Time.deltaTime * openSpeed
-        );
-
-        yield return null;
-    }
-
-    transform.rotation = targetRotation;
-}
 }
