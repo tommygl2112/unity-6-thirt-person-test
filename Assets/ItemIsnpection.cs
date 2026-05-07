@@ -2,12 +2,17 @@ using UnityEngine;
 using StarterAssets;
 using TMPro;
 
+public interface IItemAction
+{
+    void Execute(ItemIsnpection itemIsnpection);
+}
+
 public class ItemIsnpection : MonoBehaviour
 {
     public GameObject player;
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs _input;
-    private Interact interact;
+    public Interact interact;
     public GameObject InspectItemCamera;
     public MeshRenderer inspectedItemMeshRenderer; // Item.cs
     public Camera interactUiCamera;
@@ -73,7 +78,8 @@ public class ItemIsnpection : MonoBehaviour
 
         if (interact.item.destroyItem)
         {
-            Destroy(interact.item.gameObject);
+            interact.item.GetComponent<IItemAction>()?.Execute(this);
+            // Destroy(interact.item.gameObject); se destruye en IItemAction.Execute()
         }
     }
 
