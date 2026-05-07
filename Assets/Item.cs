@@ -20,6 +20,7 @@ public class Item : MonoBehaviour, IInteractable
     public GameObject viewItemCamera;
     public GameObject itemViewPosition;
     public ItemView itemView; // StarterAssetsInputs.cs
+    public TextMeshProUGUI itemInspectedTextMesh;
 
     void Start()
     {
@@ -39,10 +40,10 @@ public class Item : MonoBehaviour, IInteractable
                 text.StartDialogue();
             }
         }
-        else if (inspectItemAction)
+        else if (inspectItemAction) // R Button
         {
             itemIsnpection = itemInspected.GetComponent<ItemIsnpection>();
-            itemIsnpection.itemInspectedTextMesh = gameObject.GetComponent<TextMeshProUGUI>();
+            itemIsnpection.itemInspectedTextMesh = itemInspectedTextMesh;
 
             // Obtener componentes del objeto inspeccionado
             MeshFilter inspectedFilter = itemInspected.GetComponent<MeshFilter>();

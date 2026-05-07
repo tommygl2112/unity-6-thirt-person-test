@@ -14,7 +14,7 @@ public class ItemIsnpection : MonoBehaviour
     public SkinnedMeshRenderer playerMeshRenderer;
     public GameObject ReadItemCamera;
     public bool isReading;
-    public TextMeshProUGUI itemInspectedTextMesh;
+    public TextMeshProUGUI itemInspectedTextMesh; // Item.cs
     public TextMeshProUGUI readItemTextMesh;
     public Animator stateDrivenCameraAnimator;
 
