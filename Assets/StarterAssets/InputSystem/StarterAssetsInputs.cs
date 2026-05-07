@@ -24,10 +24,13 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+		private Flashlight flashlight;
+
 		void Start()
 		{
 			interact = gameObject.GetComponent<Interact>();
 			text = gameObject.GetComponent<Text>();
+			flashlight = gameObject.GetComponent<Flashlight>();
 		}
 
 #if ENABLE_INPUT_SYSTEM
@@ -123,6 +126,17 @@ namespace StarterAssets
 				if (interact.item != null && interact.item.inspectItemAction && interact.item.inspectItemCamera.activeSelf && interact.item.itemIsnpection.isReading == true)
 				{
 					interact.item.itemIsnpection.StopReading();
+				}
+			}
+		}
+
+		public void OnFlashlight(InputAction.CallbackContext context)
+		{
+			if (context.performed)
+			{
+				if (flashlight.playerFlashlight.activeSelf)
+				{
+					flashlight.UseFlashlight();
 				}
 			}
 		}

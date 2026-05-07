@@ -2,7 +2,7 @@ using UnityEngine;
 using StarterAssets;
 using TMPro;
 
-public interface IItemAction
+public interface IItemAction // interact.item.destroyItem
 {
     void Execute(ItemIsnpection itemIsnpection);
 }
