@@ -12,6 +12,8 @@ public class Flashlight : MonoBehaviour, IItemAction
         playerFlashlight.SetActive(true);
         flashlightSpot.SetActive(true);
 
+        Inventory.Instance.AddFlashlight();
+
         if (itemIsnpection.interact.item.destroyItem)
         {
             Destroy(itemIsnpection.interact.item.gameObject);
