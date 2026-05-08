@@ -20,6 +20,7 @@ public class DoorHandIK : MonoBehaviour
     private bool doorSideLCollider;
     public BoxCollider doorSideR;
     private bool doorSideRCollider;
+    public bool isLocked;
 
     [Header("IK Timing")]
     public float weightUpSpeed = 4f;
@@ -63,7 +64,7 @@ public class DoorHandIK : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !isOpen)
+        if (other.CompareTag("Player") && !isOpen && !isLocked)
         {
             currentPlayer = other.transform;
 
