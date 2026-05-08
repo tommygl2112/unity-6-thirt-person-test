@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
         flashlight = true;
     }
 
-    public void Add(DoorKey key)
+    public void AddDoorKey(DoorKey key)
     {
         DoorKeyData data = new DoorKeyData
         {

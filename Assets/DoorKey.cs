@@ -13,12 +13,12 @@ public class DoorKey : MonoBehaviour, IItemAction
 {
     public string doorId;
     public string keyName;
-    
+
     public void Execute(ItemIsnpection itemIsnpection) // pick up
     {
         Debug.Log("Door Key obtenida");
 
-        Inventory.Instance.Add(this);
+        Inventory.Instance.AddDoorKey(this);
 
         if (itemIsnpection.interact.item.destroyItem)
         {
