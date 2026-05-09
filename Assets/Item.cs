@@ -21,6 +21,7 @@ public class Item : MonoBehaviour, IInteractable
     public GameObject itemViewPosition;
     public ItemView itemView; // StarterAssetsInputs.cs
     public TextMeshProUGUI itemInspectedTextMesh;
+    public bool useKeyItem;
 
     void Start()
     {
@@ -65,7 +66,7 @@ public class Item : MonoBehaviour, IInteractable
         else if (viewItem)
         {
             SetViewCameraPosition();
-            gameObject.GetComponent<ItemView>().StartViewItem();
+            gameObject.GetComponent<ItemView>().StartViewItem(useKeyItem);
             stateDrivenCameraAnimator.SetBool("ViewItem", true); // el animator controla que camara mostrar en State-Driven Camera
         }
     }

@@ -10,6 +10,7 @@ public class ItemView : MonoBehaviour
     public Animator stateDrivenCameraAnimator;
     public Camera interactUiCamera;
     public SkinnedMeshRenderer playerMeshRenderer;
+    public GameObject useKeyItemUi;
 
     void Start()
     {
@@ -18,12 +19,17 @@ public class ItemView : MonoBehaviour
         _input = player.GetComponent<StarterAssetsInputs>();
     }
 
-    public void StartViewItem()
+    public void StartViewItem(bool useKeyItem) // Item.cs
     {
         interactUiCamera.enabled = false;
         interact.canInteract = false;
         thirdPersonController.enabled = false;
         playerMeshRenderer.enabled = false;
+
+        if (useKeyItem)
+        {
+            useKeyItemUi.SetActive(true);
+        }
     }
 
     public void ExitItemView()
@@ -35,6 +41,11 @@ public class ItemView : MonoBehaviour
             interactUiCamera.enabled = true;
             interact.canInteract = true;
             thirdPersonController.enabled = true;
+
+            if (useKeyItemUi.activeSelf)
+            {
+                useKeyItemUi.SetActive(false);
+            }
         }
     }
 }
