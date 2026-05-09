@@ -11,6 +11,8 @@ public class ItemView : MonoBehaviour
     public Camera interactUiCamera;
     public SkinnedMeshRenderer playerMeshRenderer;
     public GameObject useKeyItemUi;
+    public GameObject noItemsText;
+    public GameObject keyItemsSelectionScrollView;
 
     void Start()
     {
@@ -29,6 +31,18 @@ public class ItemView : MonoBehaviour
         if (useKeyItem)
         {
             useKeyItemUi.SetActive(true);
+
+            if (Inventory.Instance.doorKeys != null && Inventory.Instance.doorKeys.Count > 0)
+            {
+                // Tiene elementos
+                noItemsText.SetActive(false);
+                keyItemsSelectionScrollView.SetActive(true);
+            }
+            else
+            {
+                keyItemsSelectionScrollView.SetActive(false);
+                noItemsText.SetActive(true);
+            }
         }
     }
 
