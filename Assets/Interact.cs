@@ -17,6 +17,7 @@ public class Interact : MonoBehaviour
     public float rayOffsetX;
     public bool canInteract = true; // Text.cs, StarterAssetsInputs.cs
     public GameObject interactItemUi;
+    public GameObject InteractItemButtonTMP;
     public GameObject foundedItemUi;
     public Item item;
     public float detectItemRadius;
@@ -73,6 +74,7 @@ public class Interact : MonoBehaviour
                     uiRect.position = item.itemInteractUiPosition.position;
 
                     interactItemUi.SetActive(true);
+                    InteractItemButtonTMP.SetActive(true);
                 }
             }
             else
@@ -158,6 +160,7 @@ public class Interact : MonoBehaviour
         {
             // foundedItemUi.SetActive(false);
             interactItemUi.SetActive(false);
+            InteractItemButtonTMP.SetActive(false);
         }
 
     }
@@ -166,6 +169,7 @@ public class Interact : MonoBehaviour
     {
         interactingObject = null;
         interactItemUi.SetActive(false);
+        InteractItemButtonTMP.SetActive(false);
         item = null;
     }
 
