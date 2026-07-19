@@ -4,6 +4,7 @@ using TMPro;
 public class Item : MonoBehaviour, IInteractable
 {
     public string itemName;
+    public string itemInteraction = "";
 
     public Transform itemInteractUiPosition;
     public bool dialogueAction; //configurar en el editor

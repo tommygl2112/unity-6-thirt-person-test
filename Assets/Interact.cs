@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 
 public interface IInteractable
 {
@@ -72,6 +73,8 @@ public class Interact : MonoBehaviour
 
                     RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
                     uiRect.position = item.itemInteractUiPosition.position;
+
+                    InteractItemButtonTMP.GetComponent<TextMeshProUGUI>().text = item.itemInteraction;
 
                     interactItemUi.SetActive(true);
                     InteractItemButtonTMP.SetActive(true);
