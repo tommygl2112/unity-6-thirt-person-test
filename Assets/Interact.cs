@@ -18,7 +18,7 @@ public class Interact : MonoBehaviour
     public float rayOffsetX;
     public bool canInteract = true; // Text.cs, StarterAssetsInputs.cs
     public GameObject interactItemUi;
-    public GameObject InteractItemButtonTMP;
+    public GameObject InteractItemDescriptionTMP;
     public GameObject foundedItemUi;
     public Item item;
     public float detectItemRadius;
@@ -74,10 +74,10 @@ public class Interact : MonoBehaviour
                     RectTransform uiRect = interactItemUi.GetComponent<RectTransform>();
                     uiRect.position = item.itemInteractUiPosition.position;
 
-                    InteractItemButtonTMP.GetComponent<TextMeshProUGUI>().text = item.itemInteraction;
+                    InteractItemDescriptionTMP.GetComponent<TextMeshProUGUI>().text = item.itemInteraction;
 
                     interactItemUi.SetActive(true);
-                    InteractItemButtonTMP.SetActive(true);
+                    InteractItemDescriptionTMP.SetActive(true);
                 }
             }
             else
@@ -163,7 +163,7 @@ public class Interact : MonoBehaviour
         {
             // foundedItemUi.SetActive(false);
             interactItemUi.SetActive(false);
-            InteractItemButtonTMP.SetActive(false);
+            InteractItemDescriptionTMP.SetActive(false);
         }
 
     }
@@ -172,7 +172,7 @@ public class Interact : MonoBehaviour
     {
         interactingObject = null;
         interactItemUi.SetActive(false);
-        InteractItemButtonTMP.SetActive(false);
+        InteractItemDescriptionTMP.SetActive(false);
         item = null;
     }
 
