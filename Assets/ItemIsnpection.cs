@@ -22,6 +22,7 @@ public class ItemIsnpection : MonoBehaviour
     public TextMeshProUGUI itemInspectedTextMesh; // Item.cs
     public TextMeshProUGUI readItemTextMesh;
     public Animator stateDrivenCameraAnimator;
+    public GameObject inspectUI;
 
     void Awake()
     {
@@ -36,6 +37,7 @@ public class ItemIsnpection : MonoBehaviour
         thirdPersonController.enabled = false;
         interact.canInteract = false;
         playerMeshRenderer.enabled = false;
+        inspectUI.SetActive(true);
         
         readItemTextMesh.text = itemInspectedTextMesh.text;
     }
@@ -73,6 +75,7 @@ public class ItemIsnpection : MonoBehaviour
         playerMeshRenderer.enabled = true;
         InspectItemCamera.SetActive(false);
         interactUiCamera.enabled = true;
+        inspectUI.SetActive(false);
 
         stateDrivenCameraAnimator.SetBool("ViewItem", false);
 

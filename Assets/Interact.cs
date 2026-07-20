@@ -76,7 +76,7 @@ public class Interact : MonoBehaviour
                     uiRect.position = item.itemInteractUiPosition.position;
 
                     InteractItemDescriptionTMP.GetComponent<TextMeshProUGUI>().text = item.itemInteraction;
-                    InteractItemButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.CheckForInteractUiButton();
+                    InteractItemButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetInteractUiButton();
 
                     interactItemUi.SetActive(true);
                     InteractItemDescriptionTMP.SetActive(true);
