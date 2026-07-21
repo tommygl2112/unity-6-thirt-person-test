@@ -96,12 +96,14 @@ public class ItemIsnpection : MonoBehaviour
     public void ReadText()
     {
         isReading = true;
+        inspectUI.SetActive(false);
         ReadItemCamera.SetActive(true);
     }
 
     public void StopReading()
     {
         isReading = false;
+        inspectUI.SetActive(true);
         ReadItemCamera.SetActive(false);
     }
 }
