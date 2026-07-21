@@ -23,6 +23,9 @@ public class ItemIsnpection : MonoBehaviour
     public TextMeshProUGUI readItemTextMesh;
     public Animator stateDrivenCameraAnimator;
     public GameObject inspectUI;
+    public GameObject readItemText_ButtonTMP;
+    public GameObject exitItemInspection_ButtonTMP;
+    public GameObject rotateItemText_ButtonTMP;
 
     void Awake()
     {
@@ -37,6 +40,7 @@ public class ItemIsnpection : MonoBehaviour
         thirdPersonController.enabled = false;
         interact.canInteract = false;
         playerMeshRenderer.enabled = false;
+
         inspectUI.SetActive(true);
         
         readItemTextMesh.text = itemInspectedTextMesh.text;
@@ -46,6 +50,9 @@ public class ItemIsnpection : MonoBehaviour
     void Update()
     {
         CameraRotation();
+        readItemText_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetReadItemTextUiButton();
+        exitItemInspection_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetExitItemInspectiontUiButton();
+        rotateItemText_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetLookUiButton();
     }
 
     private void CameraRotation()
