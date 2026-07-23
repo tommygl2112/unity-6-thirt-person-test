@@ -12,12 +12,13 @@ public class ItemIsnpection : MonoBehaviour
     public GameObject player;
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs _input;
-    public Interact interact;
+    public Interact interact; //interact.item
     public GameObject InspectItemCamera;
     public MeshRenderer inspectedItemMeshRenderer; // Item.cs
     public Camera interactUiCamera;
     public SkinnedMeshRenderer playerMeshRenderer;
     public GameObject ReadItemCamera;
+    public GameObject readUI;
     public bool isReading;
     public TextMeshProUGUI itemInspectedTextMesh; // Item.cs
     public TextMeshProUGUI readItemTextMesh;
@@ -25,6 +26,7 @@ public class ItemIsnpection : MonoBehaviour
     public GameObject inspectUI;
     public GameObject readItemText_ButtonTMP;
     public GameObject exitItemInspection_ButtonTMP;
+    public GameObject exitItemInspection_DescriptionTMP;
     public GameObject rotateItemText_ButtonTMP;
 
     void Awake()
@@ -53,6 +55,7 @@ public class ItemIsnpection : MonoBehaviour
         readItemText_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetReadItemTextUiButton();
         exitItemInspection_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetExitItemInspectiontUiButton();
         rotateItemText_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetLookUiButton();
+        exitItemInspection_DescriptionTMP.GetComponent<TextMeshProUGUI>().text = interact.item.destroyItem ? "pick up" : "cancel";
     }
 
     private void CameraRotation()
@@ -98,12 +101,14 @@ public class ItemIsnpection : MonoBehaviour
         isReading = true;
         inspectUI.SetActive(false);
         ReadItemCamera.SetActive(true);
+        readUI.SetActive(true);
     }
 
     public void StopReading()
     {
         isReading = false;
-        inspectUI.SetActive(true);
+        readUI.SetActive(false);
         ReadItemCamera.SetActive(false);
+        inspectUI.SetActive(true);
     }
 }
