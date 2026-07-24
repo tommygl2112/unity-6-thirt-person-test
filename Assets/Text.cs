@@ -1,5 +1,6 @@
 using UnityEngine;
 using StarterAssets;
+using TMPro;
 
 public class Text : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Text : MonoBehaviour
     public event System.Action DialogueCompleteEvent;
     public string[] lines;
     public string dialogueName;
+    public GameObject buttonsUI_ButtonTMP;
 
     void Awake()
     {
@@ -28,7 +30,7 @@ public class Text : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        buttonsUI_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetNextDialogueUiButton();
     }
 
     public void StartDialogue()

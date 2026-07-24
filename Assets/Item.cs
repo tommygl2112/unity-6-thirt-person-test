@@ -8,6 +8,7 @@ public class Item : MonoBehaviour, IInteractable
 
     public Transform itemInteractUiPosition;
     public bool dialogueAction; //configurar en el editor
+    public string[] dialogueLines;
     public Text text;
     public bool inspectItemAction;
     public GameObject inspectItemCamera;
@@ -38,7 +39,7 @@ public class Item : MonoBehaviour, IInteractable
             if (!text.isDialogueActive)
             {
                 text.dialogueName = itemName;
-                text.lines = new string[]{"texto de prueba", "texto de prueba 2"};
+                text.lines = dialogueLines;
                 text.StartDialogue();
             }
         }
