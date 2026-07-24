@@ -28,6 +28,7 @@ public class ItemIsnpection : MonoBehaviour
     public GameObject exitItemInspection_ButtonTMP;
     public GameObject exitItemInspection_DescriptionTMP;
     public GameObject rotateItemText_ButtonTMP;
+    public GameObject exitReadItemInspection_ButtonTMP;
 
     void Awake()
     {
@@ -56,6 +57,8 @@ public class ItemIsnpection : MonoBehaviour
         exitItemInspection_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetExitItemInspectiontUiButton();
         rotateItemText_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetLookUiButton();
         exitItemInspection_DescriptionTMP.GetComponent<TextMeshProUGUI>().text = interact.item.destroyItem ? "pick up" : "cancel";
+        exitReadItemInspection_ButtonTMP.GetComponent<TextMeshProUGUI>().text = UiControllelButtons.GetStopReadingUiButton();
+
     }
 
     private void CameraRotation()

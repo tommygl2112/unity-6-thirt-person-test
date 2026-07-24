@@ -12,14 +12,19 @@ public class UiControllelButtons : MonoBehaviour
     public static string inspect_Pickup_KeyboardMouse = "[Right Click]";
     public static string inspect_Read_Xbox = "[X]";
     public static string inspect_Read_KeyboardMouse = "[R]";
-    public static string inspect_Rotate_Xbox = "[Left Joystick]";
+    public static string inspect_Rotate_Xbox = "[Right Joystick]";
     public static string inspect_Rotate_KeyboardMouse = "[Mouse]";
 
-    // Input Actions
+    // READING
+    public static string reading_stop_Xbox = "[B]";
+    public static string reading_stop_KeyboardMouse = "[Right Click]";
+
+    // Input Actions ===================================================================
     public static string interact = "";
     public static string exitItemInspection = "";
     public static string readItemText = "";
     public static string look = "";
+    public static string stopReading = "";
 
     public static string GetInteractUiButton()
     {
@@ -95,5 +100,24 @@ public class UiControllelButtons : MonoBehaviour
         }
 
         return look;
+    }
+
+    public static string GetStopReadingUiButton()
+    {
+        if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
+        {
+            stopReading = reading_stop_Xbox;
+        }
+
+        if ((Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) ||
+            (Mouse.current != null &&
+            (Mouse.current.delta.ReadValue() != Vector2.zero ||
+             Mouse.current.leftButton.wasPressedThisFrame ||
+             Mouse.current.rightButton.wasPressedThisFrame)))
+        {
+            stopReading = reading_stop_KeyboardMouse;
+        }
+
+        return stopReading;
     }
 }
