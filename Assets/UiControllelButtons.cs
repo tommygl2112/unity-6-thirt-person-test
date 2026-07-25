@@ -23,6 +23,10 @@ public class UiControllelButtons : MonoBehaviour
     public static string dialogue_continue_Xbox = "[A]";
     public static string dialogue_continue_KeyboardMouse = "[E]";
 
+    // DIALOGUE
+    public static string view_cancel_Xbox = "[B]";
+    public static string view_cancel_KeyboardMouse = "[Right Click]";
+
     // Input Actions ===================================================================
     public static string interact = "";
     public static string exitItemInspection = "";
@@ -30,6 +34,7 @@ public class UiControllelButtons : MonoBehaviour
     public static string look = "";
     public static string stopReading = "";
     public static string nextDialogue = "";
+    public static string ExitItemView = "";
 
     public static string GetInteractUiButton()
     {
@@ -143,5 +148,24 @@ public class UiControllelButtons : MonoBehaviour
         }
 
         return nextDialogue;
+    }
+
+    public static string GetExitItemViewUiButton()
+    {
+        if (Gamepad.current != null && Gamepad.current.wasUpdatedThisFrame)
+        {
+            ExitItemView = view_cancel_Xbox;
+        }
+
+        if ((Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) ||
+            (Mouse.current != null &&
+            (Mouse.current.delta.ReadValue() != Vector2.zero ||
+             Mouse.current.leftButton.wasPressedThisFrame ||
+             Mouse.current.rightButton.wasPressedThisFrame)))
+        {
+            ExitItemView = view_cancel_KeyboardMouse;
+        }
+
+        return ExitItemView;
     }
 }
